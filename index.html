@@ -148,6 +148,7 @@
   form .btn{width:100%;background:var(--accent);color:var(--navy);font-weight:700;padding:14px}
   form .btn:hover{background:#fff}
   .form-note{font-size:.78rem;color:#9fbcc7;text-align:center}
+  .form-ok{background:rgba(63,167,196,.18);border:1px solid var(--accent);border-radius:10px;padding:12px 14px;color:#fff;font-size:.92rem}
 
   /* ---------- Footer ---------- */
   footer{background:#092833;color:#9fbcc7;padding:40px 0;text-align:center}
@@ -338,7 +339,10 @@
       <form action="https://formsubmit.co/comercial.watercolombia@gmail.com" method="POST">
         <input type="hidden" name="_subject" value="Nuevo mensaje desde watercolombia.com">
         <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="true">
+        <input type="hidden" name="_next" value="https://www.watercolombia.com/?enviado=1#contacto">
         <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+        <p class="form-ok" id="formOk" hidden>¡Gracias! Recibimos tu mensaje y te responderemos lo antes posible.</p>
         <label for="nombre">Nombre</label>
         <input id="nombre" type="text" name="nombre" placeholder="Tu nombre" required>
         <label for="email">Correo</label>
@@ -365,8 +369,13 @@
 <script>
   // Año dinámico
   document.getElementById('year').textContent = new Date().getFullYear();
+  // Mensaje de confirmación tras enviar el formulario
+  if (/[?&]enviado=1/.test(location.search)) {
+    const ok = document.getElementById('formOk');
+    if (ok) ok.hidden = false;
+  }
   // Menú móvil
-  const t = document.getElementById('menuToggle'), n = document.getElementById('navLinks');
+  const t =document.getElementById('menuToggle'), n = document.getElementById('navLinks');
   t.addEventListener('click', () => n.classList.toggle('open'));
   n.querySelectorAll('a').forEach(a => a.addEventListener('click', () => n.classList.remove('open')));
 
