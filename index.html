@@ -333,12 +333,17 @@
         </div>
       </div>
 
-      <!-- FORMULARIO: reemplaza TU_ID_FORMSPREE por tu endpoint de https://formspree.io -->
-      <form action="https://formspree.io/f/TU_ID_FORMSPREE" method="POST">
+      <!-- FORMULARIO: se envía por FormSubmit al correo comercial. La primera vez hay que activarlo desde el correo de confirmación. -->
+      <form action="https://formsubmit.co/comercial.watercolombia@gmail.com" method="POST">
+        <input type="hidden" name="_subject" value="Nuevo mensaje desde watercolombia.com">
+        <input type="hidden" name="_template" value="table">
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
         <label for="nombre">Nombre</label>
         <input id="nombre" type="text" name="nombre" placeholder="Tu nombre" required>
         <label for="email">Correo</label>
         <input id="email" type="email" name="email" placeholder="tucorreo@empresa.com" required>
+        <label for="telefono">Teléfono</label>
+        <input id="telefono" type="tel" name="telefono" placeholder="+57 300 000 0000" autocomplete="tel">
         <label for="mensaje">Mensaje</label>
         <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos brevemente qué necesitas..." required></textarea>
         <button type="submit" class="btn">Enviar mensaje</button>
