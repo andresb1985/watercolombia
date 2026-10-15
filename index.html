@@ -346,7 +346,7 @@
         <label for="nombre">Nombre</label>
         <input id="nombre" type="text" name="nombre" placeholder="Tu nombre" required>
         <label for="email">Correo</label>
-        <input id="email" type="email" name="email" placeholder="tucorreo@empresa.com" required>
+        <input id="email" type="email" name="email" placeholder="tucorreo@empresa.com" required autocomplete="email" inputmode="email" maxlength="120" pattern="[^@\s]+@[^@\s]+\.[A-Za-z]{2,}" title="Escribe un correo válido, por ejemplo nombre@empresa.com">
         <label for="telefono">Teléfono</label>
         <input id="telefono" type="tel" name="telefono" placeholder="+57 300 000 0000" autocomplete="tel">
         <label for="mensaje">Mensaje</label>
@@ -374,8 +374,21 @@
     const ok = document.getElementById('formOk');
     if (ok) ok.hidden = false;
   }
+  // Validación del correo: formato completo (usuario@dominio.ext) con mensaje en español
+  (function(){
+    const em = document.getElementById('email');
+    if(!em) return;
+    const re = /^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/;
+    function check(){
+      em.value = em.value.trim();
+      em.setCustomValidity(re.test(em.value) ? '' : 'Escribe un correo válido, por ejemplo nombre@empresa.com');
+    }
+    em.addEventListener('input', check);
+    em.addEventListener('blur', check);
+    em.form.addEventListener('submit', check);
+  })();
   // Menú móvil
-  const t =document.getElementById('menuToggle'), n = document.getElementById('navLinks');
+  const t = document.getElementById('menuToggle'), n = document.getElementById('navLinks');
   t.addEventListener('click', () => n.classList.toggle('open'));
   n.querySelectorAll('a').forEach(a => a.addEventListener('click', () => n.classList.remove('open')));
 
