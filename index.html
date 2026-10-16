@@ -404,7 +404,7 @@
         <label for="telefono">Teléfono</label>
         <div class="phone-row">
           <select id="pais" aria-label="Indicativo del país"><option value="CO" selected>Colombia (+57)</option></select>
-          <input id="telefono" type="tel" inputmode="numeric" placeholder="3001234567" autocomplete="tel-national" maxlength="12">
+          <input id="telefono" type="tel" inputmode="numeric" placeholder="3001234567" autocomplete="tel-national" maxlength="12" required>
         </div>
         <input type="hidden" name="telefono" id="telefonoFull">
         <p class="field-hint" id="telHint">Colombia: 10 dígitos, sin el +57.</p>
@@ -532,7 +532,9 @@
       inp.maxLength = r.max + 6;
       const d = digitsOf(inp.value, c);
       let ok = true, message = '';
-      if(d){
+      if(!d){
+        ok = false; message = 'Escribe tu número de teléfono.';
+      } else {
         if(!r.test(d)){ ok = false; message = r.msg; }
         else if(looksFake(d)){ ok = false; message = 'Ese número no parece real. Revísalo, por favor.'; }
       }
