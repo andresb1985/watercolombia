@@ -165,6 +165,15 @@
   .contact-list svg{width:20px;height:20px;stroke:var(--accent);flex:none}
   form{display:grid;gap:14px;background:rgba(255,255,255,.06);padding:28px;border-radius:var(--radius);border:1px solid rgba(255,255,255,.12)}
   form label{font-size:.85rem;color:#c9dee6;font-weight:500;margin-bottom:-8px}
+  .phone-row{display:grid;grid-template-columns:minmax(130px,40%) 1fr;gap:10px}
+  .field-hint{font-size:.78rem;color:#9fbcc7;margin-top:-6px}
+  .field-hint.bad{color:#ffb4b4}
+  form select{
+    width:100%;padding:13px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.95);color:var(--ink);font-family:inherit;font-size:.92rem;
+    text-overflow:ellipsis;
+  }
+  form select:focus{outline:2px solid var(--accent);border-color:transparent}
   form input,form textarea{
     width:100%;padding:13px 15px;border-radius:10px;border:1px solid rgba(255,255,255,.18);
     background:rgba(255,255,255,.95);color:var(--ink);font-family:inherit;font-size:.96rem;
@@ -390,7 +399,12 @@
         <label for="email">Correo</label>
         <input id="email" type="email" name="email" placeholder="tucorreo@empresa.com" required autocomplete="email" inputmode="email" maxlength="120" pattern="[^@\s]+@[^@\s]+\.[A-Za-z]{2,}" title="Escribe un correo válido, por ejemplo nombre@empresa.com">
         <label for="telefono">Teléfono</label>
-        <input id="telefono" type="tel" name="telefono" placeholder="+57 300 000 0000" autocomplete="tel">
+        <div class="phone-row">
+          <select id="pais" aria-label="Indicativo del país"><option value="CO" selected>Colombia (+57)</option></select>
+          <input id="telefono" type="tel" inputmode="numeric" placeholder="3001234567" autocomplete="tel-national" maxlength="12">
+        </div>
+        <input type="hidden" name="telefono" id="telefonoFull">
+        <p class="field-hint" id="telHint">Colombia: 10 dígitos, sin el +57.</p>
         <label for="mensaje">Mensaje</label>
         <textarea id="mensaje" name="message" placeholder="Cuéntanos brevemente qué necesitas..." required></textarea>
         <label class="consent" for="aceptoTerminos">
@@ -450,6 +464,86 @@
     em.addEventListener('input', check);
     em.addEventListener('blur', check);
     em.form.addEventListener('submit', check);
+  })();
+  // Teléfono: indicativo de país (Colombia +57 por defecto) y validación del número
+  (function(){
+    const sel = document.getElementById('pais');
+    const inp = document.getElementById('telefono');
+    const full = document.getElementById('telefonoFull');
+    const hint = document.getElementById('telHint');
+    if(!sel || !inp || !full) return;
+
+    // Nombre|indicativo|ISO. Los países del plan NANP (+1) usan 10 dígitos con código de área.
+    const raw = 'Afganistán|93|AF;Albania|355|AL;Alemania|49|DE;Andorra|376|AD;Angola|244|AO;Anguila|1|AI;Antigua y Barbuda|1|AG;Arabia Saudita|966|SA;Argelia|213|DZ;Argentina|54|AR;Armenia|374|AM;Aruba|297|AW;Australia|61|AU;Austria|43|AT;Azerbaiyán|994|AZ;Bahamas|1|BS;Bangladés|880|BD;Barbados|1|BB;Baréin|973|BH;Bélgica|32|BE;Belice|501|BZ;Benín|229|BJ;Bermudas|1|BM;Bielorrusia|375|BY;Birmania (Myanmar)|95|MM;Bolivia|591|BO;Bonaire|599|BQ;Bosnia y Herzegovina|387|BA;Botsuana|267|BW;Brasil|55|BR;Brunéi|673|BN;Bulgaria|359|BG;Burkina Faso|226|BF;Burundi|257|BI;Bután|975|BT;Cabo Verde|238|CV;Camboya|855|KH;Camerún|237|CM;Canadá|1|CA;Catar|974|QA;Chad|235|TD;Chile|56|CL;China|86|CN;Chipre|357|CY;Colombia|57|CO;Comoras|269|KM;Congo|242|CG;Corea del Norte|850|KP;Corea del Sur|82|KR;Costa de Marfil|225|CI;Costa Rica|506|CR;Croacia|385|HR;Cuba|53|CU;Curazao|599|CW;Dinamarca|45|DK;Dominica|1|DM;Ecuador|593|EC;Egipto|20|EG;El Salvador|503|SV;Emiratos Árabes Unidos|971|AE;Eritrea|291|ER;Eslovaquia|421|SK;Eslovenia|386|SI;España|34|ES;Estados Unidos|1|US;Estonia|372|EE;Esuatini|268|SZ;Etiopía|251|ET;Filipinas|63|PH;Finlandia|358|FI;Fiyi|679|FJ;Francia|33|FR;Gabón|241|GA;Gambia|220|GM;Georgia|995|GE;Ghana|233|GH;Gibraltar|350|GI;Granada|1|GD;Grecia|30|GR;Groenlandia|299|GL;Guadalupe|590|GP;Guam|1|GU;Guatemala|502|GT;Guayana Francesa|594|GF;Guernsey|44|GG;Guinea|224|GN;Guinea Ecuatorial|240|GQ;Guinea-Bisáu|245|GW;Guyana|592|GY;Haití|509|HT;Honduras|504|HN;Hong Kong|852|HK;Hungría|36|HU;India|91|IN;Indonesia|62|ID;Irak|964|IQ;Irán|98|IR;Irlanda|353|IE;Isla de Man|44|IM;Islandia|354|IS;Islas Caimán|1|KY;Islas Cook|682|CK;Islas Feroe|298|FO;Islas Malvinas|500|FK;Islas Marianas del Norte|1|MP;Islas Marshall|692|MH;Islas Salomón|677|SB;Islas Turcas y Caicos|1|TC;Islas Vírgenes Británicas|1|VG;Islas Vírgenes de EE. UU.|1|VI;Israel|972|IL;Italia|39|IT;Jamaica|1|JM;Japón|81|JP;Jersey|44|JE;Jordania|962|JO;Kazajistán|7|KZ;Kenia|254|KE;Kirguistán|996|KG;Kiribati|686|KI;Kosovo|383|XK;Kuwait|965|KW;Laos|856|LA;Lesoto|266|LS;Letonia|371|LV;Líbano|961|LB;Liberia|231|LR;Libia|218|LY;Liechtenstein|423|LI;Lituania|370|LT;Luxemburgo|352|LU;Macao|853|MO;Macedonia del Norte|389|MK;Madagascar|261|MG;Malasia|60|MY;Malaui|265|MW;Maldivas|960|MV;Malí|223|ML;Malta|356|MT;Marruecos|212|MA;Martinica|596|MQ;Mauricio|230|MU;Mauritania|222|MR;Mayotte|262|YT;México|52|MX;Micronesia|691|FM;Moldavia|373|MD;Mónaco|377|MC;Mongolia|976|MN;Montenegro|382|ME;Montserrat|1|MS;Mozambique|258|MZ;Namibia|264|NA;Nauru|674|NR;Nepal|977|NP;Nicaragua|505|NI;Níger|227|NE;Nigeria|234|NG;Niue|683|NU;Noruega|47|NO;Nueva Caledonia|687|NC;Nueva Zelanda|64|NZ;Omán|968|OM;Países Bajos|31|NL;Pakistán|92|PK;Palaos|680|PW;Palestina|970|PS;Panamá|507|PA;Papúa Nueva Guinea|675|PG;Paraguay|595|PY;Perú|51|PE;Polinesia Francesa|689|PF;Polonia|48|PL;Portugal|351|PT;Puerto Rico|1|PR;Reino Unido|44|GB;República Centroafricana|236|CF;República Checa|420|CZ;República Democrática del Congo|243|CD;República Dominicana|1|DO;Reunión|262|RE;Ruanda|250|RW;Rumanía|40|RO;Rusia|7|RU;Samoa|685|WS;Samoa Americana|1|AS;San Cristóbal y Nieves|1|KN;San Marino|378|SM;San Martín (parte holandesa)|1|SX;San Pedro y Miquelón|508|PM;San Vicente y las Granadinas|1|VC;Santa Elena|290|SH;Santa Lucía|1|LC;Santo Tomé y Príncipe|239|ST;Senegal|221|SN;Serbia|381|RS;Seychelles|248|SC;Sierra Leona|232|SL;Singapur|65|SG;Siria|963|SY;Somalia|252|SO;Sri Lanka|94|LK;Sudáfrica|27|ZA;Sudán|249|SD;Sudán del Sur|211|SS;Suecia|46|SE;Suiza|41|CH;Surinam|597|SR;Tailandia|66|TH;Taiwán|886|TW;Tanzania|255|TZ;Tayikistán|992|TJ;Timor Oriental|670|TL;Togo|228|TG;Tokelau|690|TK;Tonga|676|TO;Trinidad y Tobago|1|TT;Túnez|216|TN;Turkmenistán|993|TM;Turquía|90|TR;Tuvalu|688|TV;Ucrania|380|UA;Uganda|256|UG;Uruguay|598|UY;Uzbekistán|998|UZ;Vanuatu|678|VU;Vaticano|379|VA;Venezuela|58|VE;Vietnam|84|VN;Wallis y Futuna|681|WF;Yemen|967|YE;Yibuti|253|DJ;Zambia|260|ZM;Zimbabue|263|ZW';
+    const list = raw.split(';').map(s => { const p = s.split('|'); return {name:p[0], code:p[1], iso:p[2]}; });
+    list.sort((a,b) => (a.iso==='CO' ? -1 : b.iso==='CO' ? 1 : a.name.localeCompare(b.name,'es')));
+    sel.innerHTML = '';
+    list.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.iso;
+      o.textContent = c.name + ' (+' + c.code + ')';
+      o.dataset.code = c.code;
+      sel.appendChild(o);
+    });
+    sel.value = 'CO';
+
+    function country(){ const o = sel.options[sel.selectedIndex]; return {iso: sel.value, code: o ? o.dataset.code : '57'}; }
+
+    function rules(c){
+      if(c.iso === 'CO') return {
+        ph: '3001234567', max: 12,
+        hint: 'Colombia: 10 dígitos, sin el +57 (celular empieza por 3, fijo por 60).',
+        test: d => /^3\d{9}$/.test(d) || /^60\d{8}$/.test(d),
+        msg: 'En Colombia el número debe tener 10 dígitos sin el +57: celular (empieza por 3) o fijo (empieza por 60).'
+      };
+      if(c.code === '1') return {
+        ph: '2025550123', max: 11,
+        hint: 'Escribe 10 dígitos: código de área + número, sin el +1.',
+        test: d => /^[2-9]\d{2}[2-9]\d{6}$/.test(d),
+        msg: 'Escribe 10 dígitos: código de área + número (sin el +1).'
+      };
+      return {
+        ph: 'Número sin indicativo', max: 15,
+        hint: 'Escribe el número sin el indicativo (+' + c.code + ').',
+        test: d => d.length >= 6 && d.length <= 14 && (c.code.length + d.length) <= 15,
+        msg: 'Escribe un número válido de 6 a 14 dígitos, sin el indicativo.'
+      };
+    }
+
+    function digitsOf(v, c){
+      let d = v.replace(/\D/g,'');
+      if(c.iso === 'CO' && d.length === 12 && d.indexOf('57') === 0) d = d.slice(2);
+      else if(c.iso !== 'CO' && d.length > 4 && d.indexOf(c.code) === 0 && (d.length - c.code.length) >= 6) d = d.slice(c.code.length);
+      return d;
+    }
+
+    // Descarta números evidentemente falsos: todos iguales o secuencias.
+    function looksFake(d){
+      if(/^(\d)\1+$/.test(d)) return true;
+      return '01234567890123456789'.indexOf(d) !== -1 || '98765432109876543210'.indexOf(d) !== -1;
+    }
+
+    function update(show){
+      const c = country(), r = rules(c);
+      inp.placeholder = r.ph;
+      inp.maxLength = r.max + 6;
+      const d = digitsOf(inp.value, c);
+      let ok = true, message = '';
+      if(d){
+        if(!r.test(d)){ ok = false; message = r.msg; }
+        else if(looksFake(d)){ ok = false; message = 'Ese número no parece real. Revísalo, por favor.'; }
+      }
+      inp.setCustomValidity(ok ? '' : message);
+      full.value = (d && ok) ? '+' + c.code + ' ' + d : '';
+      hint.textContent = (!ok && show) ? message : r.hint;
+      hint.classList.toggle('bad', !ok && show);
+    }
+
+    sel.addEventListener('change', () => update(!!inp.value));
+    inp.addEventListener('input', () => { inp.value = inp.value.replace(/[^\d\s\-+()]/g,''); update(false); });
+    inp.addEventListener('blur', () => update(true));
+    inp.form.addEventListener('submit', () => update(true));
+    update(false);
   })();
   // Exigir el captcha antes de enviar (la verificación real la hace el servidor)
   (function(){
