@@ -1,0 +1,48 @@
+:root{
+  --navy:#0e3d52;
+  --teal:#12667f;
+  --accent:#3fa7c4;
+  --ink:#17272f;
+  --muted:#5b6b73;
+  --bg:#ffffff;
+  --soft:#f3f8fa;
+  --line:#e3edf1;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  color:var(--ink);background:var(--bg);line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--teal)}
+a:hover{color:var(--navy)}
+.wrap{width:min(820px,92%);margin-inline:auto}
+header{
+  position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid var(--line);
+}
+.nav{display:flex;align-items:center;justify-content:space-between;height:76px;width:min(1120px,92%);margin-inline:auto}
+.nav img{height:48px;width:auto;display:block}
+.nav a.back{font-weight:500;color:var(--teal);font-size:.92rem}
+main{padding:56px 0 80px}
+h1{font-size:clamp(1.7rem,4vw,2.4rem);font-weight:800;color:var(--navy);letter-spacing:-.02em;margin-bottom:6px}
+.updated{color:var(--muted);font-size:.88rem;margin-bottom:38px}
+h2{font-size:1.28rem;font-weight:700;color:var(--navy);margin:34px 0 12px}
+h3{font-size:1.05rem;font-weight:700;color:var(--teal);margin:22px 0 8px}
+p{margin-bottom:14px;color:var(--ink)}
+ul,ol{margin:0 0 14px 1.3rem}
+li{margin-bottom:8px}
+.callout{
+  background:var(--soft);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 20px;margin:20px 0;font-size:.94rem;color:var(--muted);
+}
+.callout strong{color:var(--ink)}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.92rem}
+table th,table td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+table th{color:var(--navy)}
+footer{background:#092833;color:#9fbcc7;padding:36px 0;text-align:center;margin-top:40px}
+footer img{height:30px;margin-bottom:12px;opacity:.95}
+footer p{font-size:.84rem}
+footer a{color:var(--accent)}
+.legal-links{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:.82rem}

@@ -176,6 +176,9 @@
   .form-note{font-size:.78rem;color:#9fbcc7;text-align:center}
   .form-ok{background:rgba(63,167,196,.18);border:1px solid var(--accent);border-radius:10px;padding:12px 14px;color:#fff;font-size:.92rem}
   .form-err{background:rgba(220,70,70,.18);border:1px solid #e07070;border-radius:10px;padding:10px 14px;color:#fff;font-size:.88rem}
+  .consent{display:flex;align-items:flex-start;gap:10px;font-size:.82rem;color:#c9dee6;line-height:1.4;margin:0}
+  .consent input[type=checkbox]{width:16px;height:16px;flex:none;margin-top:3px;accent-color:var(--accent)}
+  .consent a{color:#fff;text-decoration:underline}
 
   /* ---------- Botón flotante WhatsApp ---------- */
   .wa-float{
@@ -390,6 +393,14 @@
         <input id="telefono" type="tel" name="telefono" placeholder="+57 300 000 0000" autocomplete="tel">
         <label for="mensaje">Mensaje</label>
         <textarea id="mensaje" name="message" placeholder="Cuéntanos brevemente qué necesitas..." required></textarea>
+        <label class="consent" for="aceptoTerminos">
+          <input type="checkbox" id="aceptoTerminos" name="acepto_terminos" value="Si" required>
+          <span>Acepto los <a href="legal/terminos.html" target="_blank" rel="noopener">Términos y Condiciones</a>.</span>
+        </label>
+        <label class="consent" for="aceptoPrivacidad">
+          <input type="checkbox" id="aceptoPrivacidad" name="acepto_privacidad" value="Si" required>
+          <span>Acepto la <a href="legal/privacidad.html" target="_blank" rel="noopener">Política de Privacidad</a>.</span>
+        </label>
         <div class="h-captcha" data-captcha="true"></div>
         <p class="form-err" id="captchaErr" hidden>Marca la casilla “No soy un robot” para poder enviar.</p>
         <button type="submit" class="btn">Enviar mensaje</button>
@@ -403,7 +414,13 @@
 <footer>
   <div class="wrap">
     <img src="img/logo-white.png" alt="WaterColombia">
-    <p>© <span id="year"></span> WaterColombia · Expertos en tratamiento de agua</p>
+    <p>© <span id="year"></span> Water Treatment Engineering SAS · WaterColombia</p>
+    <p style="margin-top:10px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;font-size:.82rem">
+      <a href="legal/terminos.html">Términos y Condiciones</a>
+      <a href="legal/privacidad.html">Política de Privacidad</a>
+      <a href="legal/cookies.html">Política de Cookies</a>
+      <a href="legal/informacion-legal.html">Información legal y tributaria</a>
+    </p>
   </div>
 </footer>
 
@@ -444,9 +461,36 @@
       if(!r || !r.value){
         e.preventDefault();
         if(err) err.hidden = false;
-      } else if(err){ err.hidden = true; }
+        return;
+      }
+      if(err) err.hidden = true;
+      registrarConsentimiento(f);
     });
   })();
+
+  // Registro trazable de la aceptación de Términos y Privacidad (fecha, hora, IP vía el Worker)
+  function registrarConsentimiento(f){
+    try{
+      const nombre = f.querySelector('#nombre');
+      const email = f.querySelector('#email');
+      const aceptoTerminos = f.querySelector('#aceptoTerminos');
+      const aceptoPrivacidad = f.querySelector('#aceptoPrivacidad');
+      fetch('https://watercolombia-consent.absocialmedia3.workers.dev/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: nombre ? nombre.value : '',
+          email: email ? email.value : '',
+          acepto_terminos: !!(aceptoTerminos && aceptoTerminos.checked),
+          acepto_privacidad: !!(aceptoPrivacidad && aceptoPrivacidad.checked),
+          version_terminos: 'v1.0-2026-10-15',
+          version_privacidad: 'v1.0-2026-10-15',
+          pagina: location.href
+        }),
+        keepalive: true
+      }).catch(function(){});
+    }catch(e){}
+  }
   // Menú móvil
   const t = document.getElementById('menuToggle'), n = document.getElementById('navLinks');
   t.addEventListener('click', () => n.classList.toggle('open'));
