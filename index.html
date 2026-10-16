@@ -407,7 +407,7 @@
           <input id="telefono" type="tel" inputmode="numeric" placeholder="3001234567" autocomplete="tel-national" maxlength="12" required>
         </div>
         <input type="hidden" name="telefono" id="telefonoFull">
-        <p class="field-hint" id="telHint">Colombia: 10 dígitos, sin el +57.</p>
+        <p class="field-hint" id="telHint" hidden></p>
         <label for="mensaje">Mensaje</label>
         <textarea id="mensaje" name="message" placeholder="Cuéntanos brevemente qué necesitas..." required></textarea>
         <label class="consent" for="aceptoTerminos">
@@ -495,7 +495,7 @@
     function rules(c){
       if(c.iso === 'CO') return {
         ph: '3001234567', max: 12,
-        hint: 'Colombia: 10 dígitos, sin el +57 (celular empieza por 3, fijo por 60).',
+        hint: '',
         test: d => /^3\d{9}$/.test(d) || /^60\d{8}$/.test(d),
         msg: 'En Colombia el número debe tener 10 dígitos sin el +57: celular (empieza por 3) o fijo (empieza por 60).'
       };
@@ -541,6 +541,7 @@
       inp.setCustomValidity(ok ? '' : message);
       full.value = (d && ok) ? '+' + c.code + ' ' + d : '';
       hint.textContent = (!ok && show) ? message : r.hint;
+      hint.hidden = !hint.textContent;
       hint.classList.toggle('bad', !ok && show);
     }
 
